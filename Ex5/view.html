@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        .container{
+            margin-bottom: 50vh;
+        }
+        header{
+            background-color: #474e5d;
+            padding: 2rem 0rem;
+        }
+        header .title,h2,p{
+            text-align: center;
+            color: white;
+        }
+        main .title,h1,p{
+            text-align: center;
+        }
+        main{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        main img{
+            width: 15%;
+        }
+        header p{
+            font-size: 1.3rem;
+        }
+        @media only screen and (max-width: 1000px) {
+            main img{
+                width: 70%;
+            }
+        }
+    </style>
+    <div class="container">
+        
+    </div>
+    
+    
+    <script>
+        
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const id = urlParams.get('id')
+        document.querySelector('title').innerText=`View Book | ${id}`
+        
+        const getBook=(()=>{
+            fetch(`https://jsonplaceholder.typicode.com/photos/${id}`).then(res=>res.json()).then(data=>{
+                if(data.title){
+                    document.querySelector('.container').innerHTML=
+                    `
+                    <header>
+                        <h1 class="title">${data.title}</h1>
+                        <h2>${data.id}</h2>
+                        <p>Resize the browser window to see this page is responsive by the way</p>
+                    </header>
+                    <main>
+                        <h1>${data.id}</h1>
+                        <img src="${data.thumbnailUrl}" alt="album-${data.albumId}">
+                    </main>
+                    `
+                    
+                }else {
+                    let newData=JSON.parse(window.localStorage.getItem('Books')).find(item => item.id==id)
+                    
+                    if(newData.title){
+                        
+                        document.querySelector('.container').innerHTML=
+                        `
+                        <header>
+                            <h1 class="title">${newData.title}</h1>
+                            <h2>${newData.id}</h2>
+                            <p>Resize the browser window to see this page is responsive by the way</p>
+                        </header>
+                        <main>
+                            <h1>${newData.id}</h1>
+                            <img src="${newData.thumbnailUrl}" alt="album-${newData.albumId}">
+                        </main>
+                        `
+                    }else document.querySelector('.container').innerHTML="<h1>Opp page not found <br/> 404</h1>"
+                }
+            }).catch(err=>{
+                document.querySelector('.container').innerHTML="<h1>Opp page not found <br/> 404</h1>"
+            })
+        })()
+    </script>
+</body>
+</html>
